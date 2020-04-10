@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+  <head>
+    
+    <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="generator" content="Hugo 0.53 with theme Tranquilpeak 0.4.3-SNAPSHOT">
+<meta name="author" content="侯俊青">
+<meta name="keywords" content="spring cloud, zuul, jdbc, 动态路由, 侯俊青, 侯俊青的博客, houjq.com, 软件, Java, Nginx">
+<meta name="description" content="Zuul 是Netflix 提供的一个开源组件,致力于在云平台上提供动态路由，监控，弹性，安全等边缘服务的框架。">
+
+
+
+
+    <title>Zuul实现JDBC动态路由</title>
+
+    <link rel="icon" href="/favicon.ico">
+    
+
+    
+
+    <link rel="canonical" href="/2018/08/zuul-jdbc/">
+
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha256-eZrrJcwDc/3uDhsdt61sL2oOBY362qM3lon1gyExkL0=" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.4/jquery.fancybox.min.css" integrity="sha256-vuXZ9LGmmwtjqFX1F+EKin1ThZMub58gKULUyf0qECk=" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.4/helpers/jquery.fancybox-thumbs.min.css" integrity="sha256-SEa4XYAHihTcEP1f5gARTB2K26Uk8PsndQYHQC1f4jU=" crossorigin="anonymous" />
+    
+    
+    <link rel="stylesheet" href="/css/style-nnm2spxvve8onlujjlegkkytaehyadd4ksxc1hyzzq9a2wvtrgbljqyulomn.min.css" />
+    
+    
+
+    
+      
+    
+    
+  </head>
+
+  <body>
+    <div id="blog">
+      <header id="header" data-behavior="4">
+  <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
+  <div class="header-title">
+    <a class="header-title-link" href="/">侯俊青的博客</a>
+  </div>
+  
+    
+      <a class="header-right-picture "
+         href="/#about">
+    
+    
+    
+      
+        <img class="header-picture" src="/author.jpg" alt="作者的图片" />
+      
+    
+    </a>
+  
+</header>
+
+      <nav id="sidebar" data-behavior="4">
+  <div class="sidebar-container">
+    
+      <div class="sidebar-profile">
+        <a href="/#about">
+          <img class="sidebar-profile-picture" src="/author.jpg" alt="作者的图片" />
+        </a>
+        <h4 class="sidebar-profile-name">侯俊青</h4>
+        
+          <h5 class="sidebar-profile-bio">改变世界的不是技术，而是技术背后的梦想</h5>
+        
+      </div>
+    
+    <ul class="sidebar-buttons">
+      
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="/">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-home"></i>
+      
+      <span class="sidebar-button-desc">首页</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="/categories/">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-bookmark"></i>
+      
+      <span class="sidebar-button-desc">分类</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="/tags/">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-tags"></i>
+      
+      <span class="sidebar-button-desc">标签</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="/archives/">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-archive"></i>
+      
+      <span class="sidebar-button-desc">归档</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="/#about">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-question"></i>
+      
+      <span class="sidebar-button-desc">关于</span>
+    </a>
+  </li>
+
+
+    </ul>
+    <ul class="sidebar-buttons">
+      
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://github.com/rhubard">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-github"></i>
+      
+      <span class="sidebar-button-desc">GitHub</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="/2018/07/wechat/">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-weixin"></i>
+      
+      <span class="sidebar-button-desc">微信</span>
+    </a>
+  </li>
+
+
+    </ul>
+    <ul class="sidebar-buttons">
+      
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="/index.xml">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-rss"></i>
+      
+      <span class="sidebar-button-desc">RSS</span>
+    </a>
+  </li>
+
+
+    </ul>
+  </div>
+</nav>
+
+      
+
+      <div id="main" data-behavior="4"
+        class="
+               hasCoverMetaIn
+               ">
+        <article class="post" itemscope itemType="http://schema.org/BlogPosting">
+          
+          
+            <div class="post-header main-content-wrap text-left">
+  
+    <h1 class="post-title" itemprop="headline">
+      Zuul实现JDBC动态路由
+    </h1>
+  
+  
+  <div class="postShorten-meta post-meta">
+    
+      <time itemprop="datePublished" datetime="2018-08-16T12:18:24&#43;08:00">
+        
+  
+  
+  
+  
+    2018-08-16 12:18
+  
+
+      </time>
+    
+    
+  
+  
+    <span>发布在</span>
+    
+      <a class="category-link" href="/categories/java/">Java</a>
+    
+  
+
+  </div>
+
+</div>
+          
+          <div class="post-content markdown" itemprop="articleBody">
+            <div class="main-content-wrap">
+              <p>Zuul 是Netflix 提供的一个开源组件,致力于在云平台上提供动态路由，监控，弹性，安全等边缘服务的框架。</p>
+
+<h1 id="zuul实现jdbc动态路由">zuul实现JDBC动态路由</h1>
+
+<p>Zuul 是Netflix 提供的一个开源组件,致力于在云平台上提供动态路由，监控，弹性，安全等边缘服务的框架。</p>
+
+<h2 id="动态路由">动态路由</h2>
+
+<p>动态路由需要达到可持久化配置，动态刷新的效果。如架构图所示，不仅要能满足从spring的配置文件properties加载路由信息，<strong>还需要从数据库加载我们的配置</strong>。另外一点是，路由信息在容器启动时就已经加载进入了内存，我们希望配置完成后，实施发布，动态刷新内存中的路由信息，达到不停机维护路由信息的效果。</p>
+
+<h2 id="使用说明">使用说明</h2>
+
+<h3 id="maven依赖">Maven依赖</h3>
+
+<p>对应的spring cloud版本需要使用 <code>Finchley.RELEASE</code>，maven依赖</p>
+
+<pre><code class="language-xml">&lt;dependency&gt;
+    &lt;groupId&gt;org.springframework.cloud&lt;/groupId&gt;
+    &lt;artifactId&gt;spring-cloud-starter-netflix-zuul&lt;/artifactId&gt;
+    &lt;exclusions&gt;
+        &lt;exclusion&gt;
+            &lt;artifactId&gt;guava&lt;/artifactId&gt;
+            &lt;groupId&gt;com.google.guava&lt;/groupId&gt;
+        &lt;/exclusion&gt;
+        &lt;exclusion&gt;
+            &lt;artifactId&gt;HdrHistogram&lt;/artifactId&gt;
+            &lt;groupId&gt;org.hdrhistogram&lt;/groupId&gt;
+        &lt;/exclusion&gt;
+    &lt;/exclusions&gt;
+&lt;/dependency&gt;
+</code></pre>
+
+<h3 id="启动类">启动类</h3>
+
+<pre><code class="language-java">@EnableZuulProxyStore // 用 @EnableZuulProxyStore 替换 @EnableZuulProxy
+@SpringCloudApplication
+@EnableFeignClients
+@EnableSwagger2
+public class TopCloudGatewayApplication
+</code></pre>
+
+<h3 id="application-yml">application.yml</h3>
+
+<pre><code class="language-yaml">spring:
+  application:
+    name: top-cloud-gateway
+  datasource:
+    url: jdbc:mysql://127.0.0.1:3306/hotel?useUnicode=true&amp;characterEncoding=utf-8
+    username: root
+    password: root
+    driver-class-name: com.mysql.jdbc.Driver
+    type: org.apache.commons.dbcp.BasicDataSource
+zuul:
+  ignored-services: '*'
+  ignored-headers: Cookie, Set-Cookie, Authorization, Header1
+  sensitive-headers: Pragma, Cache-Control, X-Frame-Options, X-Content-Type-Options, X-XSS-Protection, Expires
+  prefix: /sitech-api # 为zuul设置一个公共的前缀
+  store:
+    jdbc:
+      enabled: true # 是否开启jdbc动态路由
+      table: gateway_api_define # 默认表名
+  routes:
+    exs2:
+      path: /exs2/**
+      service-id: exs2
+    books:
+      path: /book/**
+      url: http://localhost:8090
+</code></pre>
+
+<h3 id="建表">建表</h3>
+
+<pre><code class="language-sql">CREATE TABLE `gateway_api_define` (
+  `id` varchar(50) NOT NULL,
+  `path` varchar(255) NOT NULL,
+  `service_id` varchar(50) DEFAULT NULL,
+  `url` varchar(500) DEFAULT NULL,
+  `strip_prefix` int(11) DEFAULT NULL,
+  `retryable` tinyint(1) DEFAULT NULL,
+  `sensitive_headers` varchar(255) DEFAULT NULL,
+  `enabled` tinyint(1) NOT NULL,
+  `api_name` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+INSERT INTO `gateway_api_define` VALUES ('1', '/user/**', 'user-springmvc-microservice', '', 0, 0, NULL, 1, '用户微服务');
+</code></pre>
+
+<h2 id="代码设计">代码设计</h2>
+
+<h3 id="核心代码">核心代码</h3>
+
+<ul>
+<li>JdbcZuulStoreAutoConfiguration，核心类，路由定位器，最重要</li>
+</ul>
+
+<pre><code class="language-java">@Configuration
+public class JdbcZuulStoreAutoConfiguration extends ZuulProxyAutoConfiguration {
+
+    @Autowired(required = false)
+    private Registration registration;
+    @Autowired
+    private DiscoveryClient discovery;
+    @Autowired
+    private ServiceRouteMapper serviceRouteMapper;
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
+    @Value(value = &quot;${zuul.store.jdbc.table}&quot;)
+    private String table;
+
+    // 除了routeLocator之外均继承父类ZuulProxyAutoConfiguration
+    @Bean
+    @ConditionalOnMissingBean(StoreRefreshableRouteLocator.class)
+    @ConditionalOnProperty(value = &quot;zuul.store.jdbc.enabled&quot;, havingValue = &quot;true&quot;, matchIfMissing = false)
+    public StoreRefreshableRouteLocator routeLocator() {
+        ZuulRouteStore zuulRouteStore = StringUtils.isBlank(table) ? 
+            new JdbcZuulRouteStore(jdbcTemplate) : new JdbcZuulRouteStore(jdbcTemplate, table);
+        StoreRefreshableRouteLocator routeLocator = new StoreRefreshableRouteLocator(
+            this.server.getServlet().getServletPrefix(), this.discovery,
+            this.zuulProperties, this.serviceRouteMapper,  registration, zuulRouteStore);
+        return routeLocator;
+    }
+
+
+}
+</code></pre>
+
+<ul>
+<li>StoreRefreshableRouteLocator，重写发现路由信息</li>
+</ul>
+
+<pre><code class="language-java">public class StoreRefreshableRouteLocator extends DiscoveryClientRouteLocator {
+    private final ZuulRouteStore store;
+    private DiscoveryClient discovery;
+    private ZuulProperties properties;
+
+    public StoreRefreshableRouteLocator(String servletPath, DiscoveryClient discovery,
+                                        ZuulProperties properties, 
+                                        ServiceRouteMapper serviceRouteMapper, 
+                                        ServiceInstance localServiceInstance, 
+                                        ZuulRouteStore store) {
+        super(servletPath, discovery, properties, serviceRouteMapper, localServiceInstance);
+        this.store = store;
+        this.discovery = discovery;
+        this.properties = properties;
+    }
+
+    /**
+     * 路由定位器和其他组件的交互，是最终把定位的Routes以list的方式提供出去,核心实现
+     */
+    @Override
+    protected LinkedHashMap&lt;String, ZuulProperties.ZuulRoute&gt; locateRoutes() {
+        LinkedHashMap&lt;String, ZuulProperties.ZuulRoute&gt; routesMap = new LinkedHashMap&lt;&gt;();
+        // 加载静态路由信息
+        routesMap.putAll(super.locateRoutes());
+        // 加载动态路由信息
+        for (ZuulProperties.ZuulRoute route : store.findAll()) {
+            String path = route.getPath();
+            // Prepend with slash if not already present.
+            if (!path.startsWith(&quot;/&quot;)) {
+                path = &quot;/&quot; + path;
+            }
+            if (StringUtils.hasText(this.properties.getPrefix())) {
+                path = this.properties.getPrefix() + path;
+                if (!path.startsWith(&quot;/&quot;)) {
+                    path = &quot;/&quot; + path;
+                }
+            }
+            routesMap.put(path, route);
+        }
+        return routesMap;
+    }
+}
+</code></pre>
+
+<ul>
+<li>JdbcZuulRouteStore，从数据库中加载路由信息</li>
+</ul>
+
+<pre><code class="language-java">public class JdbcZuulRouteStore implements ZuulRouteStore {
+    private static final ZuulRouteRowMapper ZUUL_ROUTE_MAPPER = new ZuulRouteRowMapper();
+    private static final String DEFAULT_TABLE_NAME = &quot;gateway_api_define&quot;;
+    private final JdbcTemplate jdbcTemplate;
+    private final String table;
+
+    public JdbcZuulRouteStore(JdbcTemplate jdbcTemplate) {
+        this(jdbcTemplate, DEFAULT_TABLE_NAME);
+    }
+
+    public JdbcZuulRouteStore(JdbcTemplate jdbcTemplate, String table) {
+        Assert.notNull(jdbcTemplate, &quot;Parameter 'jdbcTemplate' can not be null.&quot;);
+        Assert.hasLength(table, &quot;Parameter 'table' can not be empty.&quot;);
+        this.jdbcTemplate = jdbcTemplate;
+        this.table = table;
+    }
+
+    @Override
+    public List&lt;ZuulProperties.ZuulRoute&gt; findAll() {
+        final String sql = &quot;select * from &quot; + table + &quot; where enabled = true &quot;;
+        return jdbcTemplate.query(sql, ZUUL_ROUTE_MAPPER);
+    }
+
+    private static class ZuulRouteRowMapper implements RowMapper&lt;ZuulProperties.ZuulRoute&gt; {
+        @Override
+        public ZuulProperties.ZuulRoute mapRow(ResultSet rs, int rowNum) throws SQLException {
+            final String rsSensitiveHeaders = rs.getString(&quot;sensitive_headers&quot;);
+            Set&lt;String&gt; sensitiveHeaders = Sets.newHashSet();
+            if (StringUtils.isNotEmpty(rsSensitiveHeaders)) {
+                String[] arr = rsSensitiveHeaders.split(&quot;,&quot;);
+                for (String key : arr) {
+                    sensitiveHeaders.add(key);
+                }
+            }
+
+            ZuulProperties.ZuulRoute route = new ZuulProperties.ZuulRoute(
+                    rs.getString(&quot;id&quot;),
+                    rs.getString(&quot;path&quot;),
+                    rs.getString(&quot;service_id&quot;),
+                    rs.getString(&quot;url&quot;),
+                    rs.getBoolean(&quot;strip_prefix&quot;),
+                    rs.getBoolean(&quot;retryable&quot;),
+                    sensitiveHeaders
+            );
+
+            route.setCustomSensitiveHeaders(route.getSensitiveHeaders() != null &amp;&amp; 
+                                            route.getSensitiveHeaders().size() &gt; 0);
+            return route;
+        }
+    }
+}
+</code></pre>
+
+<ul>
+<li>EnableZuulProxyStore，实现自定义注解</li>
+</ul>
+
+<pre><code>@EnableCircuitBreaker
+@EnableDiscoveryClient
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.TYPE)
+@Import(JdbcZuulStoreAutoConfiguration.class)
+public @interface EnableZuulProxyStore {
+}
+</code></pre>
+
+<h3 id="类图">类图</h3>
+
+<p><img src="https://houjq.oss-cn-hongkong.aliyuncs.com/hugo/img/20190602175911.jpg" alt="zuul动态路由" /></p>
+
+<h3 id="架构图">架构图</h3>
+
+<p><img src="https://houjq.oss-cn-hongkong.aliyuncs.com/hugo/img/20190602175909.jpg" alt="架构图" /></p>
+              
+            </div>
+          </div>
+          <div id="post-footer" class="post-footer main-content-wrap">
+            
+              
+                
+                
+                  <div class="post-footer-tags">
+                    <span class="text-color-light text-small">标签</span><br/>
+                    
+  <a class="tag tag--primary tag--small" href="/tags/spring-cloud/">spring cloud</a>
+
+  <a class="tag tag--primary tag--small" href="/tags/zuul/">zuul</a>
+
+                  </div>
+                
+              
+            
+            <div class="post-actions-wrap">
+  
+      <nav >
+        <ul class="post-actions post-action-nav">
+          
+            <li class="post-action">
+              
+                <a class="post-action-btn btn btn--default tooltip--top" href="/2018/08/zuul-gateway/" data-tooltip="Zuul &amp; Spring Cloud Gateway选型比对">
+              
+                  <i class="fa fa-angle-left"></i>
+                  <span class="hide-xs hide-sm text-small icon-ml">下一篇</span>
+                </a>
+            </li>
+            <li class="post-action">
+              
+                <a class="post-action-btn btn btn--default tooltip--top" href="/2018/08/third-login/" data-tooltip="第三方登录原理探究【转载】">
+              
+                  <span class="hide-xs hide-sm text-small icon-mr">上一篇</span>
+                  <i class="fa fa-angle-right"></i>
+                </a>
+            </li>
+          
+        </ul>
+      </nav>
+    <ul class="post-actions post-action-share" >
+      
+      
+      <li class="post-action">
+        
+          <a class="post-action-btn btn btn--default" href="#">
+        
+          <i class="fa fa-list"></i>
+        </a>
+      </li>
+    </ul>
+  
+</div>
+
+            
+              
+            
+          </div>
+        </article>
+        <footer id="footer" class="main-content-wrap">
+  <span class="copyrights">
+    &copy; 2020 侯俊青. All Rights Reserved
+  </span>
+</footer>
+
+      </div>
+      <div id="bottom-bar" class="post-bottom-bar" data-behavior="4">
+        <div class="post-actions-wrap">
+  
+      <nav >
+        <ul class="post-actions post-action-nav">
+          
+            <li class="post-action">
+              
+                <a class="post-action-btn btn btn--default tooltip--top" href="/2018/08/zuul-gateway/" data-tooltip="Zuul &amp; Spring Cloud Gateway选型比对">
+              
+                  <i class="fa fa-angle-left"></i>
+                  <span class="hide-xs hide-sm text-small icon-ml">下一篇</span>
+                </a>
+            </li>
+            <li class="post-action">
+              
+                <a class="post-action-btn btn btn--default tooltip--top" href="/2018/08/third-login/" data-tooltip="第三方登录原理探究【转载】">
+              
+                  <span class="hide-xs hide-sm text-small icon-mr">上一篇</span>
+                  <i class="fa fa-angle-right"></i>
+                </a>
+            </li>
+          
+        </ul>
+      </nav>
+    <ul class="post-actions post-action-share" >
+      
+      
+      <li class="post-action">
+        
+          <a class="post-action-btn btn btn--default" href="#">
+        
+          <i class="fa fa-list"></i>
+        </a>
+      </li>
+    </ul>
+  
+</div>
+
+      </div>
+      <div id="share-options-bar" class="share-options-bar" data-behavior="4">
+  <i id="btn-close-shareoptions" class="fa fa-close"></i>
+  <ul class="share-options">
+    
+  </ul>
+</div>
+<div id="share-options-mask" class="share-options-mask"></div>
+    </div>
+    
+    <div id="about">
+  <div id="about-card">
+    <div id="about-btn-close">
+      <i class="fa fa-remove"></i>
+    </div>
+    
+      <img id="about-card-picture" src="/author.jpg" alt="作者的图片" />
+    
+    <h4 id="about-card-name">侯俊青</h4>
+    
+      <div id="about-card-bio">改变世界的不是技术，而是技术背后的梦想</div>
+    
+    
+      <div id="about-card-job">
+        <i class="fa fa-briefcase"></i>
+        <br/>
+        爱做梦的手艺人
+      </div>
+    
+    
+      <div id="about-card-location">
+        <i class="fa fa-map-marker"></i>
+        <br/>
+        中国 山西 太原
+      </div>
+    
+  </div>
+</div>
+
+    
+    
+  
+    
+    <div id="cover" style="background-image:url('/images/cover.jpg');"></div>
+  
+
+
+    
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.4/jquery.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js" integrity="sha256-/BfiIkHlHoVihZdc6TFuj7MmJ0TWcWsMXkeDFwhi0zw=" crossorigin="anonymous"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.7/js/jquery.fancybox.min.js" integrity="sha256-GEAnjcTqVP+vBp3SSc8bEDQqvWAZMiHyUSIorrWwH50=" crossorigin="anonymous"></script>
+
+
+<script src="/js/script-qi9wbxp2ya2j6p7wx1i6tgavftewndznf4v0hy2gvivk1rxgc3lm7njqb6bz.min.js"></script>
+
+
+<script lang="javascript">
+window.onload = updateMinWidth;
+window.onresize = updateMinWidth;
+document.getElementById("sidebar").addEventListener("transitionend", updateMinWidth);
+function updateMinWidth() {
+  var sidebar = document.getElementById("sidebar");
+  var main = document.getElementById("main");
+  main.style.minWidth = "";
+  var w1 = getComputedStyle(main).getPropertyValue("min-width");
+  var w2 = getComputedStyle(sidebar).getPropertyValue("width");
+  var w3 = getComputedStyle(sidebar).getPropertyValue("left");
+  main.style.minWidth = `calc(${w1} - ${w2} - ${w3})`;
+}
+</script>
+
+<script>
+$(document).ready(function() {
+  hljs.configure({ classPrefix: '', useBR: false });
+  $('pre.code-highlight > code, pre > code').each(function(i, block) {
+    if (!$(this).hasClass('codeblock')) {
+      $(this).addClass('codeblock');
+    }
+    hljs.highlightBlock(block);
+  });
+});
+</script>
+
+
+  
+    
+  
+
+
+
+
+    
+  </body>
+</html>
+

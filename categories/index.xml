@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Categories on 侯俊青的博客</title>
+    <link>/categories/</link>
+    <description>Recent content in Categories on 侯俊青的博客</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    
+	<atom:link href="/categories/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Features</title>
+      <link>/categories/features/</link>
+      <pubDate>Thu, 28 May 2015 00:00:00 +0000</pubDate>
+      
+      <guid>/categories/features/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Java</title>
+      <link>/categories/java/</link>
+      <pubDate>Thu, 30 Aug 2018 11:02:10 +0800</pubDate>
+      
+      <guid>/categories/java/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Linux</title>
+      <link>/categories/linux/</link>
+      <pubDate>Fri, 13 Jul 2018 11:59:53 +0800</pubDate>
+      
+      <guid>/categories/linux/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Nginx</title>
+      <link>/categories/nginx/</link>
+      <pubDate>Thu, 09 Apr 2020 22:15:12 +0800</pubDate>
+      
+      <guid>/categories/nginx/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Releases</title>
+      <link>/categories/releases/</link>
+      <pubDate>Tue, 15 Sep 2015 00:00:00 +0000</pubDate>
+      
+      <guid>/categories/releases/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Tranquilpeak</title>
+      <link>/categories/tranquilpeak/</link>
+      <pubDate>Tue, 15 Sep 2015 00:00:00 +0000</pubDate>
+      
+      <guid>/categories/tranquilpeak/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>安全</title>
+      <link>/categories/%E5%AE%89%E5%85%A8/</link>
+      <pubDate>Fri, 10 Apr 2020 15:31:41 +0800</pubDate>
+      
+      <guid>/categories/%E5%AE%89%E5%85%A8/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>工具</title>
+      <link>/categories/%E5%B7%A5%E5%85%B7/</link>
+      <pubDate>Fri, 10 Apr 2020 15:03:56 +0800</pubDate>
+      
+      <guid>/categories/%E5%B7%A5%E5%85%B7/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>微信</title>
+      <link>/categories/%E5%BE%AE%E4%BF%A1/</link>
+      <pubDate>Thu, 05 Jul 2018 19:43:31 +0800</pubDate>
+      
+      <guid>/categories/%E5%BE%AE%E4%BF%A1/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>架构设计</title>
+      <link>/categories/%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1/</link>
+      <pubDate>Thu, 09 Apr 2020 23:34:48 +0800</pubDate>
+      
+      <guid>/categories/%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>管理</title>
+      <link>/categories/%E7%AE%A1%E7%90%86/</link>
+      <pubDate>Sat, 11 Apr 2020 00:14:17 +0800</pubDate>
+      
+      <guid>/categories/%E7%AE%A1%E7%90%86/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>网络</title>
+      <link>/categories/%E7%BD%91%E7%BB%9C/</link>
+      <pubDate>Thu, 09 Apr 2020 20:09:44 +0800</pubDate>
+      
+      <guid>/categories/%E7%BD%91%E7%BB%9C/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>虚机技术</title>
+      <link>/categories/%E8%99%9A%E6%9C%BA%E6%8A%80%E6%9C%AF/</link>
+      <pubDate>Fri, 26 Jul 2019 16:08:27 +0800</pubDate>
+      
+      <guid>/categories/%E8%99%9A%E6%9C%BA%E6%8A%80%E6%9C%AF/</guid>
+      <description></description>
+    </item>
+    
+  </channel>
+</rss>

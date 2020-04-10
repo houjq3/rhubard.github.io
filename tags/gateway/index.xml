@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Gateway on 侯俊青的博客</title>
+    <link>/tags/gateway/</link>
+    <description>Recent content in Gateway on 侯俊青的博客</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <lastBuildDate>Thu, 30 Aug 2018 11:02:10 +0800</lastBuildDate>
+    
+	<atom:link href="/tags/gateway/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Zuul &amp; Spring Cloud Gateway选型比对</title>
+      <link>/2018/08/zuul-gateway/</link>
+      <pubDate>Thu, 30 Aug 2018 11:02:10 +0800</pubDate>
+      
+      <guid>/2018/08/zuul-gateway/</guid>
+      <description>&lt;p&gt;SpringCloudGateway是Spring官方基于Spring 5.0，Spring Boot 2.0和Project Reactor等技术开发的网关，Spring云网关旨在提供一种简单而有效的路由API的方法。&lt;/p&gt;</description>
+    </item>
+    
+  </channel>
+</rss>

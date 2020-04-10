@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Windows on 侯俊青的博客</title>
+    <link>/tags/windows/</link>
+    <description>Recent content in Windows on 侯俊青的博客</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <lastBuildDate>Fri, 26 Jul 2019 16:08:27 +0800</lastBuildDate>
+    
+	<atom:link href="/tags/windows/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Windows10家庭版安装Docker Desktop</title>
+      <link>/2019/07/docker-desktop/</link>
+      <pubDate>Fri, 26 Jul 2019 16:08:27 +0800</pubDate>
+      
+      <guid>/2019/07/docker-desktop/</guid>
+      <description>&lt;p&gt;现在大部分笔记本预装的都是win10家庭版，而家庭版又不支持Hyper-V，Docker Desktop是无法直接安装的，其实家庭版是可以通过脚本开启Hyper-V来安装Docker Desktop的。&lt;/p&gt;</description>
+    </item>
+    
+  </channel>
+</rss>

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>架构设计 on 侯俊青的博客</title>
+    <link>/categories/%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1/</link>
+    <description>Recent content in 架构设计 on 侯俊青的博客</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <lastBuildDate>Thu, 09 Apr 2020 23:34:48 +0800</lastBuildDate>
+    
+	<atom:link href="/categories/%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>sersync&#43;rsync实现图片实时同步</title>
+      <link>/2020/04/sersync-rsync/</link>
+      <pubDate>Thu, 09 Apr 2020 23:34:48 +0800</pubDate>
+      
+      <guid>/2020/04/sersync-rsync/</guid>
+      <description>&lt;p&gt;FTP推送图片，实时性差、不可靠的缺点，并且随着同步文件量增多，同步耗时变长；而短期内搞出一个分布式文件存储也不现实。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>OAuth2认证鉴权</title>
+      <link>/2019/06/oauth2/</link>
+      <pubDate>Fri, 21 Jun 2019 09:52:28 +0800</pubDate>
+      
+      <guid>/2019/06/oauth2/</guid>
+      <description>&lt;p&gt;在一个企业中, 系统由多个子系统构成, 访问每个子系统都需要单独登陆, 造成重复登陆多次, 操作复杂, 单点登陆即只需要登陆一次, 即可访问所有子系统&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>第三方登录原理探究【转载】</title>
+      <link>/2018/08/third-login/</link>
+      <pubDate>Tue, 14 Aug 2018 15:18:49 +0800</pubDate>
+      
+      <guid>/2018/08/third-login/</guid>
+      <description>&lt;p&gt;OAuth（开放授权）是一个开放标准，允许用户让第三方应用访问该用户在某一网站上存储的私密的资源（如照片，视频，联系人列表），而无需将用户名和密码提供给第三方应用。&lt;/p&gt;</description>
+    </item>
+    
+  </channel>
+</rss>

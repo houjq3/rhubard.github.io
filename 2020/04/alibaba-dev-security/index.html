@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+  <head>
+    
+    <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="generator" content="Hugo 0.53 with theme Tranquilpeak 0.4.3-SNAPSHOT">
+<meta name="author" content="侯俊青">
+<meta name="keywords" content="安全, 阿里巴巴Java开发手册, 侯俊青, 侯俊青的博客, houjq.com, 软件, Java, Nginx">
+<meta name="description" content="对《阿里巴巴Java开发手册》涉及安全的知识点进行解读">
+
+
+
+
+    <title>《阿里巴巴Java开发手册》涉及安全部分讲解</title>
+
+    <link rel="icon" href="/favicon.ico">
+    
+
+    
+
+    <link rel="canonical" href="/2020/04/alibaba-dev-security/">
+
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha256-eZrrJcwDc/3uDhsdt61sL2oOBY362qM3lon1gyExkL0=" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.4/jquery.fancybox.min.css" integrity="sha256-vuXZ9LGmmwtjqFX1F+EKin1ThZMub58gKULUyf0qECk=" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.4/helpers/jquery.fancybox-thumbs.min.css" integrity="sha256-SEa4XYAHihTcEP1f5gARTB2K26Uk8PsndQYHQC1f4jU=" crossorigin="anonymous" />
+    
+    
+    <link rel="stylesheet" href="/css/style-nnm2spxvve8onlujjlegkkytaehyadd4ksxc1hyzzq9a2wvtrgbljqyulomn.min.css" />
+    
+    
+
+    
+      
+    
+    
+  </head>
+
+  <body>
+    <div id="blog">
+      <header id="header" data-behavior="4">
+  <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
+  <div class="header-title">
+    <a class="header-title-link" href="/">侯俊青的博客</a>
+  </div>
+  
+    
+      <a class="header-right-picture "
+         href="/#about">
+    
+    
+    
+      
+        <img class="header-picture" src="/author.jpg" alt="作者的图片" />
+      
+    
+    </a>
+  
+</header>
+
+      <nav id="sidebar" data-behavior="4">
+  <div class="sidebar-container">
+    
+      <div class="sidebar-profile">
+        <a href="/#about">
+          <img class="sidebar-profile-picture" src="/author.jpg" alt="作者的图片" />
+        </a>
+        <h4 class="sidebar-profile-name">侯俊青</h4>
+        
+          <h5 class="sidebar-profile-bio">改变世界的不是技术，而是技术背后的梦想</h5>
+        
+      </div>
+    
+    <ul class="sidebar-buttons">
+      
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="/">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-home"></i>
+      
+      <span class="sidebar-button-desc">首页</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="/categories/">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-bookmark"></i>
+      
+      <span class="sidebar-button-desc">分类</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="/tags/">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-tags"></i>
+      
+      <span class="sidebar-button-desc">标签</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="/archives/">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-archive"></i>
+      
+      <span class="sidebar-button-desc">归档</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="/#about">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-question"></i>
+      
+      <span class="sidebar-button-desc">关于</span>
+    </a>
+  </li>
+
+
+    </ul>
+    <ul class="sidebar-buttons">
+      
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://github.com/rhubard">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-github"></i>
+      
+      <span class="sidebar-button-desc">GitHub</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="/2018/07/wechat/">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-weixin"></i>
+      
+      <span class="sidebar-button-desc">微信</span>
+    </a>
+  </li>
+
+
+    </ul>
+    <ul class="sidebar-buttons">
+      
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="/index.xml">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-rss"></i>
+      
+      <span class="sidebar-button-desc">RSS</span>
+    </a>
+  </li>
+
+
+    </ul>
+  </div>
+</nav>
+
+      
+
+      <div id="main" data-behavior="4"
+        class="
+               hasCoverMetaIn
+               ">
+        <article class="post" itemscope itemType="http://schema.org/BlogPosting">
+          
+          
+            <div class="post-header main-content-wrap text-left">
+  
+    <h1 class="post-title" itemprop="headline">
+      《阿里巴巴Java开发手册》涉及安全部分讲解
+    </h1>
+  
+  
+  <div class="postShorten-meta post-meta">
+    
+      <time itemprop="datePublished" datetime="2020-04-10T15:31:41&#43;08:00">
+        
+  
+  
+  
+  
+    2020-04-10 15:31
+  
+
+      </time>
+    
+    
+  
+  
+    <span>发布在</span>
+    
+      <a class="category-link" href="/categories/%e5%ae%89%e5%85%a8/">安全</a>
+    
+  
+
+  </div>
+
+</div>
+          
+          <div class="post-content markdown" itemprop="articleBody">
+            <div class="main-content-wrap">
+              <p>对《阿里巴巴Java开发手册》涉及安全的知识点进行解读</p>
+
+<p>《阿里巴巴Java开发手册》可以作为编码风格、规范、要约的最佳实践，在阅读过程中，有一部分质量方面的规范涉及安全，提取出来分享下。</p>
+
+<p><strong>【推荐】类成员与方法访问控制从严：</strong>
+java的访问控制可以通过private、protect关键字，避免被外部反射机制调用实现。</p>
+
+<ol>
+<li><p>如果不允许外部直接通过 new 来创建对象，那么构造方法必须是 private。
+如果构造方法是private，则外部new 时,编译器检查为The constructor PrivateTool() is not visible，需要设置为一定的权限，default则为package访问权限。</p>
+
+<pre><code class="language-java">public class PrivateTool {
+private PrivateTool() {
+// TODO Auto-generated constructor stub
+}
+}
+</code></pre></li>
+
+<li><p>工具类不允许有 public 或 default 构造方法。
+这样的工具类不够优雅</p></li>
+
+<li><p>类非 static 成员变量并且与子类共享，必须是 protected。
+保持类与子类的成员变量的权限一致</p></li>
+
+<li><p>类非 static 成员变量并且仅在本类使用，必须是 private。</p></li>
+
+<li><p>类 static 成员变量如果仅在本类使用，必须是 private。</p></li>
+
+<li><p>若是 static 成员变量，必须考虑是否为 final。</p></li>
+
+<li><p>类成员方法只供类内部调用，必须是 private。</p></li>
+
+<li><p>类成员方法只对继承类公开，那么限制为 protected。</p></li>
+</ol>
+
+<p>以上比较详细的说明了关键字的使用方法。</p>
+
+<p><strong>【推荐】避免 Random 实例被多线程使用，虽然共享该实例是线程安全的，但会因竞争同一 seed 导致的性能下降。</strong>
+java.util.Random 的实例或者 Math.random（）的seed唯一（），来自于系统时间的通过线性同余公式产生，所以在获取大量的值时，攻击者可以预测seed值，继而计算出随机数。推荐使用java.security.SecureRandom</p>
+
+<p><strong>【推荐】在并发场景下，通过双重检查锁（double-checked locking）实现延迟初始化的优 化问题隐患(可参考 The “Double-Checked Locking is Broken” Declaration)，推荐解 决方案中较为简单一种（适用于 JDK5 及以上版本），将目标属性声明为 volatile 型</strong>*
+参考<a href="https://race604.com/java-double-checked-singleton/?from=timeline">https://race604.com/java-double-checked-singleton/?from=timeline</a></p>
+
+<p><strong>【推荐】接口入参保护，这种场景常见的是用于做批量操作的接口。</strong>
+对接口入参必须进行校验，包括对外提供的开放接口，不管是 RPC/API/HTTP 接口。敏感权限入口。
+<strong>【强制】对 trace/debug/info 级别的日志输出，必须使用条件输出形式或者使用占位符的方 式。</strong>
+日志系统不使用占位符的话，可能发生CRLF注入的风险。</p>
+
+<p><strong>【参考】可以使用 warn 日志级别来记录用户输入参数错误的情况，避免用户投诉时，无所适 从。注意日志输出的级别，error 级别只记录系统逻辑出错、异常等重要的错误信息。如非必 要，请不要在此场景打出 error 级别。</strong>
+   考虑到twitter的案例，遵循合法合规要求，需要避免在日志中记录银行卡、身份证、密码、token、cookie等敏感信息。参考案例：<a href="http://www.anquan.us/static/bugs/wooyun-2014-055359.html">http://www.anquan.us/static/bugs/wooyun-2014-055359.html</a></p>
+
+<p><strong>安全规约</strong></p>
+
+<p><strong>【强制】隶属于用户个人的页面或者功能必须进行权限控制校验。</strong>
+目前的订单越权、遍历等web安全问题增多，需要对与此类平行权限问题予以重点考虑。</p>
+
+<p><strong>【强制】用户敏感数据禁止直接展示，必须对展示数据进行脱敏。</strong>
+同时也需要对打码字段定义统一的标准，如果A应用对打码1589119，而B应用只显示前7位，称为打码不严，也是一种信息安全隐患。</p>
+
+<p><strong>【强制】用户输入的 SQL 参数严格使用参数绑定或者 METADATA 字段值限定，防止 SQL 注入， 禁止字符串拼接 SQL 访问数据库。</strong>
+参数绑定是ORM的说法，可以通过强制类型语言的特性避免一些恶意输入，底层采用JDBC的PreparedStatement预定义sql功能，本意是为了提高效率，因为mysql给字符串转移，所以达到了防止sql注入的目的，参考<a href="https://blog.csdn.net/xieyuooo/article/details/10732375?utm_source=itdadao&amp;utm_medium=referral">https://blog.csdn.net/xieyuooo/article/details/10732375?utm_source=itdadao&amp;utm_medium=referral</a></p>
+
+<p><strong>【强制】用户请求传入的任何参数必须做有效性验证。 说明：忽略参数校验可能导致：  page size 过大导致内存溢出  恶意 order by 导致数据库慢查询  任意重定向  SQL 注入  反序列化注入  正则输入源串拒绝服务 ReDoS 说明：Java 代码用正则来验证客户端的输入，有些正则写法验证普通用户输入没有问题， 但是如果攻击人员使用的是特殊构造的字符串来验证，有可能导致死循环的结果。</strong>
+攻击人员的思路同开发迥然不同，会考虑破坏系统机密性、完整性、可用性的恶意触发点。通过污点分析的技术判断代码污染源即是考虑到一切来源于用户的输入都是不可信的。</p>
+
+<p><strong>【强制】禁止向 HTML 页面输出未经安全过滤或未正确转义的用户数据。</strong>
+实际使用中，可以使用json格式工具类往页面输出内容。xss的场景很复杂，采用过滤和转义手段时，要采用组织内部的安全api或者专业的esapi，避免自己实现。</p>
+
+<p><strong>【强制】表单、AJAX 提交必须执行 CSRF 安全过滤</strong>
+csrf、cors跨域资源配置不当的安全问题逐步增多，目前对于表单提交的csrf需要强烈关注，其实login csrf，查询、删除时的csrf也需要适当处理。</p>
+
+<p><strong>【强制】在使用平台资源，譬如短信、邮件、电话、下单、支付，必须实现正确的防重放限制， 如数量限制、疲劳度控制、验证码校验，避免被滥刷、资损。</strong>
+验证码可以在短信网关限制单人单天不超过一定的次数，通过要建立短信模板，避免攻击者越权自定义短信内容带来安全风险。验证码可以采用6位数字+字母的组合，并及时销毁。</p>
+
+<p><strong>【推荐】发贴、评论、发送即时消息等用户生成内容的场景必须实现防刷、文本内容违禁词过滤等风控策略。</strong>
+文本、图片等内容安全已经有了多种开放服务，可以快速接入保证风控效果。</p>
+
+<p><strong>【强制】sql.xml 配置参数使用：#{}，#param# 不要使用${} 此种方式容易出现 SQL 注入。</strong>
+实践中遇到的问题是有业务会模糊查询、动态sql，这种情况需要进行过滤。</p>
+              
+            </div>
+          </div>
+          <div id="post-footer" class="post-footer main-content-wrap">
+            
+              
+                
+                
+                  <div class="post-footer-tags">
+                    <span class="text-color-light text-small">标签</span><br/>
+                    
+  <a class="tag tag--primary tag--small" href="/tags/%E5%AE%89%E5%85%A8/">安全</a>
+
+  <a class="tag tag--primary tag--small" href="/tags/%E5%BC%80%E5%8F%91/">开发</a>
+
+                  </div>
+                
+              
+            
+            <div class="post-actions-wrap">
+  
+      <nav >
+        <ul class="post-actions post-action-nav">
+          
+            <li class="post-action">
+              
+                <a class="post-action-btn btn btn--default tooltip--top" href="/2020/04/man/" data-tooltip="做个男人，做个成熟的男人，做个有城府的男人">
+              
+                  <i class="fa fa-angle-left"></i>
+                  <span class="hide-xs hide-sm text-small icon-ml">下一篇</span>
+                </a>
+            </li>
+            <li class="post-action">
+              
+                <a class="post-action-btn btn btn--default tooltip--top" href="/2020/04/edit-this-cookie/" data-tooltip="Chrome插件EditThisCookie">
+              
+                  <span class="hide-xs hide-sm text-small icon-mr">上一篇</span>
+                  <i class="fa fa-angle-right"></i>
+                </a>
+            </li>
+          
+        </ul>
+      </nav>
+    <ul class="post-actions post-action-share" >
+      
+      
+      <li class="post-action">
+        
+          <a class="post-action-btn btn btn--default" href="#">
+        
+          <i class="fa fa-list"></i>
+        </a>
+      </li>
+    </ul>
+  
+</div>
+
+            
+              
+            
+          </div>
+        </article>
+        <footer id="footer" class="main-content-wrap">
+  <span class="copyrights">
+    &copy; 2020 侯俊青. All Rights Reserved
+  </span>
+</footer>
+
+      </div>
+      <div id="bottom-bar" class="post-bottom-bar" data-behavior="4">
+        <div class="post-actions-wrap">
+  
+      <nav >
+        <ul class="post-actions post-action-nav">
+          
+            <li class="post-action">
+              
+                <a class="post-action-btn btn btn--default tooltip--top" href="/2020/04/man/" data-tooltip="做个男人，做个成熟的男人，做个有城府的男人">
+              
+                  <i class="fa fa-angle-left"></i>
+                  <span class="hide-xs hide-sm text-small icon-ml">下一篇</span>
+                </a>
+            </li>
+            <li class="post-action">
+              
+                <a class="post-action-btn btn btn--default tooltip--top" href="/2020/04/edit-this-cookie/" data-tooltip="Chrome插件EditThisCookie">
+              
+                  <span class="hide-xs hide-sm text-small icon-mr">上一篇</span>
+                  <i class="fa fa-angle-right"></i>
+                </a>
+            </li>
+          
+        </ul>
+      </nav>
+    <ul class="post-actions post-action-share" >
+      
+      
+      <li class="post-action">
+        
+          <a class="post-action-btn btn btn--default" href="#">
+        
+          <i class="fa fa-list"></i>
+        </a>
+      </li>
+    </ul>
+  
+</div>
+
+      </div>
+      <div id="share-options-bar" class="share-options-bar" data-behavior="4">
+  <i id="btn-close-shareoptions" class="fa fa-close"></i>
+  <ul class="share-options">
+    
+  </ul>
+</div>
+<div id="share-options-mask" class="share-options-mask"></div>
+    </div>
+    
+    <div id="about">
+  <div id="about-card">
+    <div id="about-btn-close">
+      <i class="fa fa-remove"></i>
+    </div>
+    
+      <img id="about-card-picture" src="/author.jpg" alt="作者的图片" />
+    
+    <h4 id="about-card-name">侯俊青</h4>
+    
+      <div id="about-card-bio">改变世界的不是技术，而是技术背后的梦想</div>
+    
+    
+      <div id="about-card-job">
+        <i class="fa fa-briefcase"></i>
+        <br/>
+        爱做梦的手艺人
+      </div>
+    
+    
+      <div id="about-card-location">
+        <i class="fa fa-map-marker"></i>
+        <br/>
+        中国 山西 太原
+      </div>
+    
+  </div>
+</div>
+
+    
+    
+  
+    
+    <div id="cover" style="background-image:url('/images/cover.jpg');"></div>
+  
+
+
+    
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.4/jquery.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js" integrity="sha256-/BfiIkHlHoVihZdc6TFuj7MmJ0TWcWsMXkeDFwhi0zw=" crossorigin="anonymous"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.7/js/jquery.fancybox.min.js" integrity="sha256-GEAnjcTqVP+vBp3SSc8bEDQqvWAZMiHyUSIorrWwH50=" crossorigin="anonymous"></script>
+
+
+<script src="/js/script-qi9wbxp2ya2j6p7wx1i6tgavftewndznf4v0hy2gvivk1rxgc3lm7njqb6bz.min.js"></script>
+
+
+<script lang="javascript">
+window.onload = updateMinWidth;
+window.onresize = updateMinWidth;
+document.getElementById("sidebar").addEventListener("transitionend", updateMinWidth);
+function updateMinWidth() {
+  var sidebar = document.getElementById("sidebar");
+  var main = document.getElementById("main");
+  main.style.minWidth = "";
+  var w1 = getComputedStyle(main).getPropertyValue("min-width");
+  var w2 = getComputedStyle(sidebar).getPropertyValue("width");
+  var w3 = getComputedStyle(sidebar).getPropertyValue("left");
+  main.style.minWidth = `calc(${w1} - ${w2} - ${w3})`;
+}
+</script>
+
+<script>
+$(document).ready(function() {
+  hljs.configure({ classPrefix: '', useBR: false });
+  $('pre.code-highlight > code, pre > code').each(function(i, block) {
+    if (!$(this).hasClass('codeblock')) {
+      $(this).addClass('codeblock');
+    }
+    hljs.highlightBlock(block);
+  });
+});
+</script>
+
+
+  
+    
+  
+
+
+
+
+    
+  </body>
+</html>
+

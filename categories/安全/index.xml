@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>安全 on 侯俊青的博客</title>
+    <link>/categories/%E5%AE%89%E5%85%A8/</link>
+    <description>Recent content in 安全 on 侯俊青的博客</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <lastBuildDate>Fri, 10 Apr 2020 15:31:41 +0800</lastBuildDate>
+    
+	<atom:link href="/categories/%E5%AE%89%E5%85%A8/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>《阿里巴巴Java开发手册》涉及安全部分讲解</title>
+      <link>/2020/04/alibaba-dev-security/</link>
+      <pubDate>Fri, 10 Apr 2020 15:31:41 +0800</pubDate>
+      
+      <guid>/2020/04/alibaba-dev-security/</guid>
+      <description>&lt;p&gt;对《阿里巴巴Java开发手册》涉及安全的知识点进行解读&lt;/p&gt;</description>
+    </item>
+    
+  </channel>
+</rss>

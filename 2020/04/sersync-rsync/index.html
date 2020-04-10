@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+  <head>
+    
+    <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="generator" content="Hugo 0.53 with theme Tranquilpeak 0.4.3-SNAPSHOT">
+<meta name="author" content="侯俊青">
+<meta name="keywords" content="sersync, rsync, 侯俊青, 侯俊青的博客, houjq.com, 软件, Java, Nginx">
+<meta name="description" content="FTP推送图片，实时性差、不可靠的缺点，并且随着同步文件量增多，同步耗时变长；而短期内搞出一个分布式文件存储也不现实。">
+
+
+
+
+    <title>sersync&#43;rsync实现图片实时同步</title>
+
+    <link rel="icon" href="/favicon.ico">
+    
+
+    
+
+    <link rel="canonical" href="/2020/04/sersync-rsync/">
+
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha256-eZrrJcwDc/3uDhsdt61sL2oOBY362qM3lon1gyExkL0=" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.4/jquery.fancybox.min.css" integrity="sha256-vuXZ9LGmmwtjqFX1F+EKin1ThZMub58gKULUyf0qECk=" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.4/helpers/jquery.fancybox-thumbs.min.css" integrity="sha256-SEa4XYAHihTcEP1f5gARTB2K26Uk8PsndQYHQC1f4jU=" crossorigin="anonymous" />
+    
+    
+    <link rel="stylesheet" href="/css/style-nnm2spxvve8onlujjlegkkytaehyadd4ksxc1hyzzq9a2wvtrgbljqyulomn.min.css" />
+    
+    
+
+    
+      
+    
+    
+  </head>
+
+  <body>
+    <div id="blog">
+      <header id="header" data-behavior="4">
+  <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
+  <div class="header-title">
+    <a class="header-title-link" href="/">侯俊青的博客</a>
+  </div>
+  
+    
+      <a class="header-right-picture "
+         href="/#about">
+    
+    
+    
+      
+        <img class="header-picture" src="/author.jpg" alt="作者的图片" />
+      
+    
+    </a>
+  
+</header>
+
+      <nav id="sidebar" data-behavior="4">
+  <div class="sidebar-container">
+    
+      <div class="sidebar-profile">
+        <a href="/#about">
+          <img class="sidebar-profile-picture" src="/author.jpg" alt="作者的图片" />
+        </a>
+        <h4 class="sidebar-profile-name">侯俊青</h4>
+        
+          <h5 class="sidebar-profile-bio">改变世界的不是技术，而是技术背后的梦想</h5>
+        
+      </div>
+    
+    <ul class="sidebar-buttons">
+      
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="/">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-home"></i>
+      
+      <span class="sidebar-button-desc">首页</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="/categories/">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-bookmark"></i>
+      
+      <span class="sidebar-button-desc">分类</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="/tags/">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-tags"></i>
+      
+      <span class="sidebar-button-desc">标签</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="/archives/">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-archive"></i>
+      
+      <span class="sidebar-button-desc">归档</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="/#about">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-question"></i>
+      
+      <span class="sidebar-button-desc">关于</span>
+    </a>
+  </li>
+
+
+    </ul>
+    <ul class="sidebar-buttons">
+      
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://github.com/rhubard">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-github"></i>
+      
+      <span class="sidebar-button-desc">GitHub</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="/2018/07/wechat/">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-weixin"></i>
+      
+      <span class="sidebar-button-desc">微信</span>
+    </a>
+  </li>
+
+
+    </ul>
+    <ul class="sidebar-buttons">
+      
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="/index.xml">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-rss"></i>
+      
+      <span class="sidebar-button-desc">RSS</span>
+    </a>
+  </li>
+
+
+    </ul>
+  </div>
+</nav>
+
+      
+
+      <div id="main" data-behavior="4"
+        class="
+               hasCoverMetaIn
+               ">
+        <article class="post" itemscope itemType="http://schema.org/BlogPosting">
+          
+          
+            <div class="post-header main-content-wrap text-left">
+  
+    <h1 class="post-title" itemprop="headline">
+      sersync&#43;rsync实现图片实时同步
+    </h1>
+  
+  
+  <div class="postShorten-meta post-meta">
+    
+      <time itemprop="datePublished" datetime="2020-04-09T23:34:48&#43;08:00">
+        
+  
+  
+  
+  
+    2020-04-09 23:34
+  
+
+      </time>
+    
+    
+  
+  
+    <span>发布在</span>
+    
+      <a class="category-link" href="/categories/%e6%9e%b6%e6%9e%84%e8%ae%be%e8%ae%a1/">架构设计</a>
+    
+  
+
+  </div>
+
+</div>
+          
+          <div class="post-content markdown" itemprop="articleBody">
+            <div class="main-content-wrap">
+              <p>FTP推送图片，实时性差、不可靠的缺点，并且随着同步文件量增多，同步耗时变长；而短期内搞出一个分布式文件存储也不现实。</p>
+
+<p>确定采用sersync+rsync组件实现图片实时同步到资源服务器。</p>
+
+<h2 id="介绍">介绍</h2>
+
+<ol>
+<li><p><code>sersync</code> 是基于 <code>inotify</code> 开发的，类似于 <code>inotify-tools</code> 的工具</p></li>
+
+<li><p><code>sersync</code> 可以记录下被监听目录中发生变化的（包括增加、删除、修改）具体某一个文件或者某一个目录的名字，然后使用rsync同步的时候，只同步发生变化的文件或者目录</p></li>
+</ol>
+
+<h2 id="优点">优点</h2>
+
+<ol>
+<li><p><code>sersync</code> 可以记录被监听目录中发生变化的（增，删，改）具体某个文件或目录的名字；</p></li>
+
+<li><p><code>rsync</code> 在同步时，只同步发生变化的文件或目录（每次发生变化的数据相对整个同步目录数据来说很小，rsync在遍历查找对比文件时，速度很快），因此效率很高。</p></li>
+</ol>
+
+<h2 id="部署架构">部署架构</h2>
+
+<ul>
+<li>31部署 <code>sersync</code></li>
+<li>64~71为图片服务器，部署 <code>rsync</code></li>
+</ul>
+
+<p><img src="https://houjq.oss-cn-hongkong.aliyuncs.com/hugo/img/20200409233526.jpg" alt="img" /></p>
+
+<h2 id="安装配置">安装配置</h2>
+
+<h3 id="sersync">sersync</h3>
+
+<ol>
+<li><p>解压 <code>sersync2.5.4_64bit_binary_stable_final.tar.gz</code></p></li>
+
+<li><p>修改 <code>confxml.xml</code></p></li>
+</ol>
+
+
+  
+    
+  
+  
+    
+  
+  
+    
+  
+  
+    
+  
+
+
+<figure class="highlight xml language-xml">
+  <figcaption>
+    
+      <span>confxml.xml</span><a href="http://underscorejs.org/#compact" target="_blank" rel="external">confxml.xml</a>
+    
+  </figcaption>
+  <table>
+    <tbody>
+      <tr>
+        <td class="gutter">
+          <pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br></pre>
+        </td>
+        <td class="code">
+          <pre class="code-highlight language-xml"><code class="xml">&lt;?xml version=&#34;1.0&#34; encoding=&#34;ISO-8859-1&#34;?&gt;
+
+&lt;head version=&#34;2.5&#34;&gt;
+    &lt;host hostip=&#34;x.x.x.31&#34; port=&#34;9380&#34;&gt;&lt;/host&gt;
+    &lt;debug start=&#34;false&#34;/&gt;
+    &lt;fileSystem xfs=&#34;false&#34;/&gt;
+    &lt;filter start=&#34;false&#34;&gt;
+	&lt;exclude expression=&#34;(.*)\.svn&#34;&gt;&lt;/exclude&gt;
+	&lt;exclude expression=&#34;(.*)\.gz&#34;&gt;&lt;/exclude&gt;
+	&lt;exclude expression=&#34;^info/*&#34;&gt;&lt;/exclude&gt;
+	&lt;exclude expression=&#34;^static/*&#34;&gt;&lt;/exclude&gt;
+	&lt;!-- 监控事件的过程中过滤特定文件，和特定文件夹的文件 --&gt;
+    &lt;/filter&gt;
+    &lt;inotify&gt;
+	&lt;delete start=&#34;true&#34;/&gt;
+	&lt;createFolder start=&#34;true&#34;/&gt;
+	&lt;createFile start=&#34;false&#34;/&gt;
+	&lt;closeWrite start=&#34;true&#34;/&gt;
+	&lt;moveFrom start=&#34;true&#34;/&gt;
+	&lt;moveTo start=&#34;true&#34;/&gt;
+	&lt;attrib start=&#34;false&#34;/&gt;
+	&lt;modify start=&#34;false&#34;/&gt;
+	&lt;!-- 设置要监控的事件 --&gt;
+    &lt;/inotify&gt;
+    &lt;sersync&gt;
+    &lt;localpath watch=&#34;/applications/mios-market-config-rest/material&#34;&gt;
+    &lt;!-- 设置要监控的目录 --&gt;
+        &lt;remote ip=&#34;x.x.x.64&#34; name=&#34;market&#34;/&gt;
+        &lt;remote ip=&#34;x.x.x.65&#34; name=&#34;market&#34;/&gt;
+        &lt;remote ip=&#34;x.x.x.66&#34; name=&#34;market&#34;/&gt;
+        &lt;remote ip=&#34;x.x.x.67&#34; name=&#34;market&#34;/&gt;
+        &lt;remote ip=&#34;x.x.x.68&#34; name=&#34;market&#34;/&gt;
+        &lt;remote ip=&#34;x.x.x.69&#34; name=&#34;market&#34;/&gt;
+        &lt;remote ip=&#34;x.x.x.70&#34; name=&#34;market&#34;/&gt;
+        &lt;remote ip=&#34;x.x.x.71&#34; name=&#34;market&#34;/&gt;
+    	&lt;!-- 指定远端rsync服务器的地址和模块名 --&gt;
+    &lt;/localpath&gt;
+    &lt;rsync&gt;
+        &lt;commonParams params=&#34;-artuz&#34;/&gt;
+        &lt;auth start=&#34;false&#34; users=&#34;root&#34; passwordfile=&#34;/etc/rsync.pas&#34;/&gt;
+        &lt;userDefinedPort start=&#34;true&#34; port=&#34;9381&#34;/&gt;&lt;!-- port=874 --&gt;
+        &lt;timeout start=&#34;false&#34; time=&#34;100&#34;/&gt;&lt;!-- timeout=100 --&gt;
+        &lt;ssh start=&#34;false&#34;/&gt;
+    &lt;/rsync&gt;
+    &lt;failLog path=&#34;/sersync/rsync_fail_log.sh&#34; timeToExecute=&#34;60&#34;/&gt;&lt;!--default every 60mins execute once--&gt;
+    &lt;crontab start=&#34;false&#34; schedule=&#34;1440&#34;&gt;&lt;!--600mins--&gt;
+    &lt;!-- 是否启用执行完整rsync，并指定执行周期 --&gt;
+        &lt;crontabfilter start=&#34;false&#34;&gt;
+    	&lt;!-- 设置完整执行rsync时的过滤条件 --&gt;
+        &lt;exclude expression=&#34;*.php&#34;&gt;&lt;/exclude&gt;
+        &lt;exclude expression=&#34;info/*&#34;&gt;&lt;/exclude&gt;
+        &lt;/crontabfilter&gt;
+    &lt;/crontab&gt;
+    &lt;plugin start=&#34;false&#34; name=&#34;command&#34;/&gt;
+    &lt;!-- 设置sersync传输后调用name指定的插件脚本，默认关闭 --&gt;
+    &lt;/sersync&gt;
+
+&lt;/head&gt;</code></pre>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</figure>
+
+<ol>
+<li>启动 <code>sersync</code></li>
+</ol>
+
+<pre><code class="language-shell">$sersync_home/sersync2 -d -r -o $sersync_home/confxml.xml
+</code></pre>
+
+<h3 id="rsync">Rsync</h3>
+
+<ol>
+<li><p>解压 <code>rsync-3.1.3.tar.gz</code></p></li>
+
+<li><p>编译</p></li>
+</ol>
+
+<pre><code class="language-shell">./configure --prefix=/heapp/rsync 
+make &amp;&amp; make install
+</code></pre>
+
+<ol>
+<li>修改 <code>rsyncd.conf</code>（免密配置）</li>
+</ol>
+
+
+  
+    
+  
+  
+    
+  
+  
+    
+  
+  
+    
+  
+
+
+<figure class="highlight apache.conf language-apache.conf">
+  <figcaption>
+    
+      <span>rsyncd.conf</span><a href="http://underscorejs.org/#compact" target="_blank" rel="external">rsyncd.conf</a>
+    
+  </figcaption>
+  <table>
+    <tbody>
+      <tr>
+        <td class="gutter">
+          <pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre>
+        </td>
+        <td class="code">
+          <pre class="code-highlight language-apache.conf"><code class="apache.conf">port = 9381
+#uid = nobody
+#gid = nobody
+use chroot = no
+hosts allow=*
+#max connections = 0
+pid file = /rsync/logs/rsyncd.pid
+lock file = /rsync/logs/rsync.lock
+log file = /rsync/logs/rsyncd.log
+
+[market]
+path = /imgServer/material
+comment = market
+read only = no</code></pre>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</figure>
+
+<ol>
+<li>启动</li>
+</ol>
+
+<pre><code class="language-shell">$rsync_home/bin/rsync --daemon --config=$rsync_home/rsyncd.conf
+</code></pre>
+              
+            </div>
+          </div>
+          <div id="post-footer" class="post-footer main-content-wrap">
+            
+              
+                
+                
+                  <div class="post-footer-tags">
+                    <span class="text-color-light text-small">标签</span><br/>
+                    
+  <a class="tag tag--primary tag--small" href="/tags/sersync/">sersync</a>
+
+  <a class="tag tag--primary tag--small" href="/tags/rsync/">rsync</a>
+
+                  </div>
+                
+              
+            
+            <div class="post-actions-wrap">
+  
+      <nav >
+        <ul class="post-actions post-action-nav">
+          
+            <li class="post-action">
+              
+                <a class="post-action-btn btn btn--default tooltip--top" href="/2020/04/edit-this-cookie/" data-tooltip="Chrome插件EditThisCookie">
+              
+                  <i class="fa fa-angle-left"></i>
+                  <span class="hide-xs hide-sm text-small icon-ml">下一篇</span>
+                </a>
+            </li>
+            <li class="post-action">
+              
+                <a class="post-action-btn btn btn--default tooltip--top" href="/2020/04/nginx-rtmp/" data-tooltip="利用Nginx搭建RTMP流媒体服务器">
+              
+                  <span class="hide-xs hide-sm text-small icon-mr">上一篇</span>
+                  <i class="fa fa-angle-right"></i>
+                </a>
+            </li>
+          
+        </ul>
+      </nav>
+    <ul class="post-actions post-action-share" >
+      
+      
+      <li class="post-action">
+        
+          <a class="post-action-btn btn btn--default" href="#">
+        
+          <i class="fa fa-list"></i>
+        </a>
+      </li>
+    </ul>
+  
+</div>
+
+            
+              
+            
+          </div>
+        </article>
+        <footer id="footer" class="main-content-wrap">
+  <span class="copyrights">
+    &copy; 2020 侯俊青. All Rights Reserved
+  </span>
+</footer>
+
+      </div>
+      <div id="bottom-bar" class="post-bottom-bar" data-behavior="4">
+        <div class="post-actions-wrap">
+  
+      <nav >
+        <ul class="post-actions post-action-nav">
+          
+            <li class="post-action">
+              
+                <a class="post-action-btn btn btn--default tooltip--top" href="/2020/04/edit-this-cookie/" data-tooltip="Chrome插件EditThisCookie">
+              
+                  <i class="fa fa-angle-left"></i>
+                  <span class="hide-xs hide-sm text-small icon-ml">下一篇</span>
+                </a>
+            </li>
+            <li class="post-action">
+              
+                <a class="post-action-btn btn btn--default tooltip--top" href="/2020/04/nginx-rtmp/" data-tooltip="利用Nginx搭建RTMP流媒体服务器">
+              
+                  <span class="hide-xs hide-sm text-small icon-mr">上一篇</span>
+                  <i class="fa fa-angle-right"></i>
+                </a>
+            </li>
+          
+        </ul>
+      </nav>
+    <ul class="post-actions post-action-share" >
+      
+      
+      <li class="post-action">
+        
+          <a class="post-action-btn btn btn--default" href="#">
+        
+          <i class="fa fa-list"></i>
+        </a>
+      </li>
+    </ul>
+  
+</div>
+
+      </div>
+      <div id="share-options-bar" class="share-options-bar" data-behavior="4">
+  <i id="btn-close-shareoptions" class="fa fa-close"></i>
+  <ul class="share-options">
+    
+  </ul>
+</div>
+<div id="share-options-mask" class="share-options-mask"></div>
+    </div>
+    
+    <div id="about">
+  <div id="about-card">
+    <div id="about-btn-close">
+      <i class="fa fa-remove"></i>
+    </div>
+    
+      <img id="about-card-picture" src="/author.jpg" alt="作者的图片" />
+    
+    <h4 id="about-card-name">侯俊青</h4>
+    
+      <div id="about-card-bio">改变世界的不是技术，而是技术背后的梦想</div>
+    
+    
+      <div id="about-card-job">
+        <i class="fa fa-briefcase"></i>
+        <br/>
+        爱做梦的手艺人
+      </div>
+    
+    
+      <div id="about-card-location">
+        <i class="fa fa-map-marker"></i>
+        <br/>
+        中国 山西 太原
+      </div>
+    
+  </div>
+</div>
+
+    
+    
+  
+    
+    <div id="cover" style="background-image:url('/images/cover.jpg');"></div>
+  
+
+
+    
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.4/jquery.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js" integrity="sha256-/BfiIkHlHoVihZdc6TFuj7MmJ0TWcWsMXkeDFwhi0zw=" crossorigin="anonymous"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.7/js/jquery.fancybox.min.js" integrity="sha256-GEAnjcTqVP+vBp3SSc8bEDQqvWAZMiHyUSIorrWwH50=" crossorigin="anonymous"></script>
+
+
+<script src="/js/script-qi9wbxp2ya2j6p7wx1i6tgavftewndznf4v0hy2gvivk1rxgc3lm7njqb6bz.min.js"></script>
+
+
+<script lang="javascript">
+window.onload = updateMinWidth;
+window.onresize = updateMinWidth;
+document.getElementById("sidebar").addEventListener("transitionend", updateMinWidth);
+function updateMinWidth() {
+  var sidebar = document.getElementById("sidebar");
+  var main = document.getElementById("main");
+  main.style.minWidth = "";
+  var w1 = getComputedStyle(main).getPropertyValue("min-width");
+  var w2 = getComputedStyle(sidebar).getPropertyValue("width");
+  var w3 = getComputedStyle(sidebar).getPropertyValue("left");
+  main.style.minWidth = `calc(${w1} - ${w2} - ${w3})`;
+}
+</script>
+
+<script>
+$(document).ready(function() {
+  hljs.configure({ classPrefix: '', useBR: false });
+  $('pre.code-highlight > code, pre > code').each(function(i, block) {
+    if (!$(this).hasClass('codeblock')) {
+      $(this).addClass('codeblock');
+    }
+    hljs.highlightBlock(block);
+  });
+});
+</script>
+
+
+  
+    
+  
+
+
+
+
+    
+  </body>
+</html>
+

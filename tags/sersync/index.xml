@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Sersync on 侯俊青的博客</title>
+    <link>/tags/sersync/</link>
+    <description>Recent content in Sersync on 侯俊青的博客</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <lastBuildDate>Thu, 09 Apr 2020 23:34:48 +0800</lastBuildDate>
+    
+	<atom:link href="/tags/sersync/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>sersync&#43;rsync实现图片实时同步</title>
+      <link>/2020/04/sersync-rsync/</link>
+      <pubDate>Thu, 09 Apr 2020 23:34:48 +0800</pubDate>
+      
+      <guid>/2020/04/sersync-rsync/</guid>
+      <description>&lt;p&gt;FTP推送图片，实时性差、不可靠的缺点，并且随着同步文件量增多，同步耗时变长；而短期内搞出一个分布式文件存储也不现实。&lt;/p&gt;</description>
+    </item>
+    
+  </channel>
+</rss>

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>管理 on 侯俊青的博客</title>
+    <link>/categories/%E7%AE%A1%E7%90%86/</link>
+    <description>Recent content in 管理 on 侯俊青的博客</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <lastBuildDate>Sat, 11 Apr 2020 00:14:17 +0800</lastBuildDate>
+    
+	<atom:link href="/categories/%E7%AE%A1%E7%90%86/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>做个男人，做个成熟的男人，做个有城府的男人</title>
+      <link>/2020/04/man/</link>
+      <pubDate>Sat, 11 Apr 2020 00:14:17 +0800</pubDate>
+      
+      <guid>/2020/04/man/</guid>
+      <description>&lt;p&gt;看了一篇帖子，讲男人的，觉得说的很好，拿过来，鞭策自己，同时鞭策能看到这篇文章的朋友们，男人们。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>七大人生工具</title>
+      <link>/2019/07/life-tools/</link>
+      <pubDate>Wed, 17 Jul 2019 09:18:12 +0800</pubDate>
+      
+      <guid>/2019/07/life-tools/</guid>
+      <description>&lt;p&gt;SWOT、PDCA、6W2H、SMART、WBS、时间管理、二八原则&lt;/p&gt;</description>
+    </item>
+    
+  </channel>
+</rss>

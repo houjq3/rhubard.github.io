@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Rtmp on 侯俊青的博客</title>
+    <link>/tags/rtmp/</link>
+    <description>Recent content in Rtmp on 侯俊青的博客</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <lastBuildDate>Thu, 09 Apr 2020 22:15:12 +0800</lastBuildDate>
+    
+	<atom:link href="/tags/rtmp/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>利用Nginx搭建RTMP流媒体服务器</title>
+      <link>/2020/04/nginx-rtmp/</link>
+      <pubDate>Thu, 09 Apr 2020 22:15:12 +0800</pubDate>
+      
+      <guid>/2020/04/nginx-rtmp/</guid>
+      <description>&lt;p&gt;将视频流实时上传给服务器进行解析，使用RTMP直播服务器，将搭建RTMP服务器的过程分享给大家。&lt;/p&gt;</description>
+    </item>
+    
+  </channel>
+</rss>
